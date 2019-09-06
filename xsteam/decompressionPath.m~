@@ -1,0 +1,80 @@
+%Calculate internal energy
+
+pmin = 1;
+pmax = 1000;
+Pres = 900; %bar
+Tres = 110; %celsius
+
+P = linspace(pmin,pmax,100);
+P = logspace(log10(pmin),log10(pmax),100);
+T = zeros(length(P),1);
+T(length(T)) = Tres;
+
+resEnthalpy = XSteam('h_pT',Pres,Tres);
+enthalpies = zeros(length(T),1);
+
+
+nNewton = 100;
+for i=length(P)-1:-1:1
+%     for i=1:1
+   
+        
+   thisP = P(i);
+   %calculate temperature satisfying isenthalpic decompression
+   Tguess = T(i+1);
+%         Tguess = Tres;
+   
+    k=sqrt(eps);%amount by which to perturb temperature
+% k =0.01
+   iConverged = 0;
+   for iNewton = 1:nNewton
+        %compute jacobian
+        H(iNewton) = XSteam('h_pT',thisP,Tguess);
+        if( H(iNewton) > 1000)%drop below boiling temp!
+           Tguess = 99; 
+           H(iNewton) = XSteam('h_pT',thisP,Tguess);
+        end
+        
+        residual = H(iNewton)-resEnthalpy;
+        if(abs(residual/resEnthalpy) < 1e-2)
+            residual
+            enthalpies(i) = H(iNewton);
+            T(i) = Tguess;
+            iConverged=1;
+            break;
+        end
+        
+        %do line search
+        for iLi
+        
+        
+        
+        
+        
+        
+        jacobian = (XSteam('h_pT',thisP,Tguess+k)-H(iNewton))/k;
+        if(abs(residual/jacobian) > 1)
+           jacobian = 1*abs(residual)*sign(jacobian); 
+        end
+        Tguess = Tguess - residual/jacobian;
+
+   end
+    if(~iConverged)
+        disp('Solver failed to converge')
+        keyboard
+        i
+    end
+   
+end
+
+figure(1)
+clf;
+plot(log10(P),T)
+xlabel('log10(Pressure)')
+ylabel('T in C')
+
+figure(2)
+clf;
+hold on
+scatter(1:nNewton,H)
+plot(H)
