@@ -1,3 +1,6 @@
 [submodule "slepian_alpha"]
 	path = slepian_alpha
 	url = https://github.com/csdms-contrib/slepian_alpha.git
+[submodule "slepian_bravo"]
+	path = slepian_bravo
+	url = https://github.com/csdms-contrib/slepian_bravo.git
