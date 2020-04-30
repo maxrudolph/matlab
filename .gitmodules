@@ -1,0 +1,3 @@
+[submodule "slepian_alpha"]
+	path = slepian_alpha
+	url = https://github.com/csdms-contrib/slepian_alpha.git
