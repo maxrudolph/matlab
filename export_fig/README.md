@@ -9,6 +9,8 @@ Exporting a figure from MATLAB the way you want it (hopefully the way it looks o
 The second goal is to make the output media suitable for publication, allowing you to publish your results in the full glory that you originally intended. This includes embedding fonts, setting image compression levels (including lossless), anti-aliasing, cropping, setting the colourspace, alpha-blending and getting the right resolution.
 
 Perhaps the best way to demonstrate what export_fig can do is with some examples.
+
+*Note: `export_fig` currently supports only figures created with the `figure` function, or GUIDE. Figures created using `uifigure` or AppDesigner are only partially supported. See issues [#287](https://github.com/altmany/export_fig/issues/287), [#261](https://github.com/altmany/export_fig/issues/261) for details.*
   
 ### Examples
 **Visual accuracy** - MATLAB's exporting functions, namely `saveas` and `print`, change many visual properties of a figure, such as size, axes limits and ticks, and background colour, in unexpected and unintended ways. Export_fig aims to faithfully reproduce the figure as it appears on screen. For example:  
@@ -168,7 +170,7 @@ When using the functional form like this, be sure to put string variables in quo
 export_fig(sprintf('plot%d', a), '-a1', '-pdf', '-png');
 ```
 
-**Specifying the figure/axes** - if you have mutiple figures open you can specify which figure to export using its handle:  
+**Specifying the figure/axes** - if you have multiple figures open you can specify which figure to export using its handle:  
 ```Matlab
 export_fig(figure_handle, filename);
 ```
@@ -227,7 +229,7 @@ then you are missing one or more of the files that come in the export_fig packag
 ### Known issues
 There are lots of problems with MATLAB's exporting functions, especially `print`. Export_fig is simply a glorified wrapper for MATLAB's `print` function, and doesn't solve all of its bugs (yet?). Some of the problems I know about are:
   
-**Fonts** - when using the painters renderer, MATLAB can only export a small number of fonts, details of which can be found [here](http://www.mathworks.com/help/releases/R2014a/matlab/creating_plots/choosing-a-printer-driver.html#f3-96545). Export_fig attempts to correct font names in the resulting EPS file (up to a maximum of 11 different fonts in one figure), but this is not always guaranteed to work. In particular, the text positions will be affected. It also does not work for text blocks where the 'Interpreter' property is set to 'latex'.
+**Fonts** - when using the painters renderer, MATLAB can only export a small number of fonts, details of which can be found [here](https://web.archive.org/web/20131031180818/http://www.mathworks.com:80/help/matlab/creating_plots/choosing-a-printer-driver.html#f3-96545). Export_fig attempts to correct font names in the resulting EPS file (up to a maximum of 11 different fonts in one figure), but this is not always guaranteed to work. In particular, the text positions will be affected. It also does not work for text blocks where the 'Interpreter' property is set to 'latex'.
 
 Also, when using the painters renderer, ghostscript will sometimes throw an error such as `Error: /undefined in /findfont`. This suggests that ghostscript could not find a definition file for one of your fonts. One possible fix for this is to make sure the file `EXPORT_FIG_PATH/.ignore/gs_font_path.txt` exists and contains a list of paths to the folder(s) containing the necessary font definitions (make sure that they are TrueType definitions!), separated by a semicolon.
 
